@@ -8,6 +8,7 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/unifield', { useNewUrlParser: true, useUnifiedTopology: true })
@@ -155,14 +156,40 @@ app.get('/api/cropguides/:id', async (req, res) => {
   res.json(guide);
 });
 
-app.post('/api/cropguides', verifyToken, async (req, res) => {
-  const guide = new CropGuide(req.body);
+app.post('/api/cropguides', upload.single('image'), verifyToken, async (req, res) => {
+  const { name, season, soil, water, diseases } = req.body;
+  const guideData = {
+    name,
+    season,
+    soil,
+    water,
+    diseases: diseases ? JSON.parse(diseases) : []
+  };
+
+  if (req.file) {
+    guideData.imageUrl = `/uploads/${req.file.filename}`;
+  }
+
+  const guide = new CropGuide(guideData);
   await guide.save();
   res.json(guide);
 });
 
-app.put('/api/cropguides/:id', verifyToken, async (req, res) => {
-  const guide = await CropGuide.findByIdAndUpdate(req.params.id, req.body, { new: true });
+app.put('/api/cropguides/:id', upload.single('image'), verifyToken, async (req, res) => {
+  const { name, season, soil, water, diseases } = req.body;
+  const updateData = {
+    name,
+    season,
+    soil,
+    water,
+    diseases: diseases ? JSON.parse(diseases) : []
+  };
+
+  if (req.file) {
+    updateData.imageUrl = `/uploads/${req.file.filename}`;
+  }
+
+  const guide = await CropGuide.findByIdAndUpdate(req.params.id, updateData, { new: true });
   res.json(guide);
 });
 
@@ -178,10 +205,25 @@ app.get('/api/marketdata', async (req, res) => {
   res.json(data);
 });
 
+app.get('/api/marketdata/:id', async (req, res) => {
+  const data = await MarketData.findById(req.params.id);
+  res.json(data);
+});
+
 app.post('/api/marketdata', verifyToken, async (req, res) => {
   const data = new MarketData(req.body);
   await data.save();
   res.json(data);
+});
+
+app.put('/api/marketdata/:id', verifyToken, async (req, res) => {
+  const data = await MarketData.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.json(data);
+});
+
+app.delete('/api/marketdata/:id', verifyToken, async (req, res) => {
+  await MarketData.findByIdAndDelete(req.params.id);
+  res.json({ message: 'Market data deleted' });
 });
 
 // GovernmentScheme routes

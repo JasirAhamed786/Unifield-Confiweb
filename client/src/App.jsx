@@ -18,7 +18,8 @@ import ResearchUpdates from './components/ResearchUpdates';
 import ResearchDetail from './components/ResearchDetail';
 import PolicyInformation from './components/PolicyInformation';
 import PolicyDetail from './components/PolicyDetail';
-import AdminPanel from './components/AdminPanel';
+import AdminRoute from './components/AdminRoute';
+import AdminDashboard from './pages/AdminDashboard';
 import { AuthProvider } from './contexts/AuthContext';
 import './i18n';
 
@@ -59,7 +60,7 @@ function App() {
             <Route path="/research/:id" element={<ResearchDetail />} />
             <Route path="/policies" element={<PolicyInformation />} />
             <Route path="/policies/:id" element={<PolicyDetail />} />
-            <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />

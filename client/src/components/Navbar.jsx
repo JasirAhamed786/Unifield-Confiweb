@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, User, MessageCircle, LogOut, Menu, X } from 'lucide-react';
+import { Search, User, MessageCircle, LogOut, Menu, X, Settings } from 'lucide-react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
@@ -69,6 +69,12 @@ const Navbar = () => {
                   <MessageCircle className="h-5 w-5 mr-2" />
                   {t('Ask Expert')}
                 </Link>
+                {user?.role === 'Admin' && (
+                  <Link to="/admin" className="bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700 transition-colors flex items-center">
+                    <Settings className="h-5 w-5 mr-2" />
+                    Admin Panel
+                  </Link>
+                )}
                 <div className="relative group">
                   <button className="flex items-center space-x-2 text-gray-700 hover:text-primary transition-colors">
                     <User className="h-6 w-6" />
@@ -139,6 +145,11 @@ const Navbar = () => {
                   <Link to="/dashboard" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">
                     Dashboard
                   </Link>
+                  {user?.role === 'Admin' && (
+                    <Link to="/admin" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">
+                      Admin Panel
+                    </Link>
+                  )}
                   <Link to="/profile" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">
                     Profile
                   </Link>

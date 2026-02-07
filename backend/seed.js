@@ -21,33 +21,33 @@ const seedData = async () => {
     await ResearchUpdate.deleteMany({});
     await PolicyInformation.deleteMany({});
 
-    // Seed Users - commented out to prevent seeding users
-    // const users = await User.insertMany([
-    //   {
-    //     name: 'John Farmer',
-    //     email: 'john@example.com',
-    //     password: '$2a$10$hashedpassword1', // password: farmer123
-    //     role: 'Farmer',
-    //     languagePref: 'EN',
-    //     location: 'California, USA'
-    //   },
-    //   {
-    //     name: 'Dr. Sarah Expert',
-    //     email: 'sarah@example.com',
-    //     password: '$2a$10$hashedpassword2', // password: expert123
-    //     role: 'Expert',
-    //     languagePref: 'EN',
-    //     location: 'Iowa, USA'
-    //   },
-    //   {
-    //     name: 'Admin User',
-    //     email: 'admin@example.com',
-    //     password: '$2a$10$hashedpassword3', // password: admin123
-    //     role: 'Admin',
-    //     languagePref: 'EN',
-    //     location: 'Washington, DC'
-    //   }
-    // ]);
+    // Seed Users
+    const users = await User.insertMany([
+      {
+        name: 'John Farmer',
+        email: 'john@example.com',
+        password: '$2a$10$hashedpassword1', // password: farmer123
+        role: 'Farmer',
+        languagePref: 'EN',
+        location: 'California, USA'
+      },
+      {
+        name: 'Dr. Sarah Expert',
+        email: 'sarah@example.com',
+        password: '$2a$10$hashedpassword2', // password: expert123
+        role: 'Expert',
+        languagePref: 'EN',
+        location: 'Iowa, USA'
+      },
+      {
+        name: 'Admin User',
+        email: 'admin@example.com',
+        password: '$2a$10$hashedpassword3', // password: admin123
+        role: 'Admin',
+        languagePref: 'EN',
+        location: 'Washington, DC'
+      }
+    ]);
 
     // Seed Crop Guides
     const cropGuides = await CropGuide.insertMany([

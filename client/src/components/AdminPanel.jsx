@@ -35,13 +35,14 @@ const AdminPanel = () => {
 
   const fetchStats = async () => {
     try {
-      const [usersRes, cropsRes, schemesRes, researchRes, policiesRes, postsRes] = await Promise.all([
+      const [usersRes, cropsRes, schemesRes, researchRes, policiesRes, postsRes, marketdataRes] = await Promise.all([
         axios.get('http://localhost:5000/api/users'),
-        axios.get('http://localhost:5001/api/cropguides'),
-        axios.get('http://localhost:5001/api/schemes'),
-        axios.get('http://localhost:5001/api/research'),
-        axios.get('http://localhost:5001/api/policies'),
-        axios.get('http://localhost:5001/api/forumposts')
+        axios.get('http://localhost:5000/api/cropguides'),
+        axios.get('http://localhost:5000/api/schemes'),
+        axios.get('http://localhost:5000/api/research'),
+        axios.get('http://localhost:5000/api/policies'),
+        axios.get('http://localhost:5000/api/forumposts'),
+        axios.get('http://localhost:5000/api/marketdata')
       ]);
 
       setStats({
@@ -50,7 +51,8 @@ const AdminPanel = () => {
         schemes: schemesRes.data.length,
         research: researchRes.data.length,
         policies: policiesRes.data.length,
-        posts: postsRes.data.length
+        posts: postsRes.data.length,
+        marketdata: marketdataRes.data.length
       });
     } catch (err) {
       console.log(err);
@@ -60,13 +62,14 @@ const AdminPanel = () => {
 
   const fetchData = async () => {
     try {
-      const [usersRes, cropsRes, schemesRes, researchRes, policiesRes, postsRes] = await Promise.all([
-        axios.get('http://localhost:5003/api/users'),
-        axios.get('http://localhost:5003/api/cropguides'),
-        axios.get('http://localhost:5003/api/schemes'),
-        axios.get('http://localhost:5003/api/research'),
-        axios.get('http://localhost:5003/api/policies'),
-        axios.get('http://localhost:5003/api/forumposts')
+      const [usersRes, cropsRes, schemesRes, researchRes, policiesRes, postsRes, marketdataRes] = await Promise.all([
+        axios.get('http://localhost:5000/api/users', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }),
+        axios.get('http://localhost:5000/api/cropguides'),
+        axios.get('http://localhost:5000/api/schemes'),
+        axios.get('http://localhost:5000/api/research'),
+        axios.get('http://localhost:5000/api/policies'),
+        axios.get('http://localhost:5000/api/forumposts'),
+        axios.get('http://localhost:5000/api/marketdata')
       ]);
 
       setData({
@@ -75,7 +78,8 @@ const AdminPanel = () => {
         schemes: schemesRes.data,
         research: researchRes.data,
         policies: policiesRes.data,
-        posts: postsRes.data
+        posts: postsRes.data,
+        marketdata: marketdataRes.data
       });
       setLoading(false);
     } catch (err) {
@@ -96,11 +100,14 @@ const AdminPanel = () => {
         case 'scheme': endpoint = `api/schemes/${id}`; break;
         case 'research': endpoint = `api/research/${id}`; break;
         case 'policy': endpoint = `api/policies/${id}`; break;
+        case 'marketdata': endpoint = `api/marketdata/${id}`; break;
         case 'post': endpoint = `api/forumposts/${id}`; break;
         default: return;
       }
 
-      await axios.delete(`http://localhost:5000/${endpoint}`);
+      await axios.delete(`http://localhost:5000/${endpoint}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
       toast.success(`${type} deleted successfully`);
       fetchStats();
       fetchData();
@@ -108,6 +115,21 @@ const AdminPanel = () => {
       console.log(err);
       toast.error(`Failed to delete ${type}`);
     }
+  };
+
+  const handleView = (type, item) => {
+    // For now, just show an alert with item details
+    alert(`${type.toUpperCase()} DETAILS:\n\n${JSON.stringify(item, null, 2)}`);
+  };
+
+  const handleEdit = (type, item) => {
+    // For now, just show an alert - in a real app, this would open an edit modal
+    alert(`Edit ${type} functionality would open here for:\n\n${JSON.stringify(item, null, 2)}`);
+  };
+
+  const handleAddNew = (type) => {
+    // For now, just show an alert - in a real app, this would open an add modal
+    alert(`Add new ${type} functionality would open here`);
   };
 
   if (user?.role !== 'Admin') {
@@ -131,6 +153,7 @@ const AdminPanel = () => {
     { id: 'schemes', label: 'Schemes', icon: BookOpen },
     { id: 'research', label: 'Research', icon: FileText },
     { id: 'policies', label: 'Policies', icon: Gavel },
+    { id: 'marketdata', label: 'Market Data', icon: BarChart3 },
     { id: 'forum', label: 'Forum Posts', icon: FileText }
   ];
 
@@ -169,15 +192,24 @@ const AdminPanel = () => {
                 ))}
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div className="flex space-x-2">
-                    <button className="text-blue-600 hover:text-blue-900">
+                    <button
+                      onClick={() => handleView(type, item)}
+                      className="text-blue-600 hover:text-blue-900"
+                      title="View Details"
+                    >
                       <Eye className="h-4 w-4" />
                     </button>
-                    <button className="text-yellow-600 hover:text-yellow-900">
+                    <button
+                      onClick={() => handleEdit(type, item)}
+                      className="text-yellow-600 hover:text-yellow-900"
+                      title="Edit Item"
+                    >
                       <Edit className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(type, item._id)}
                       className="text-red-600 hover:text-red-900"
+                      title="Delete Item"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -372,6 +404,18 @@ const AdminPanel = () => {
           { key: 'isActive', label: 'Status', render: (item) => item.isActive ? 'Active' : 'Inactive' }
         ],
         'policy'
+      )}
+
+      {/* Market Data */}
+      {activeTab === 'marketdata' && renderTable(
+        data.marketdata,
+        [
+          { key: 'cropName', label: 'Crop Name' },
+          { key: 'region', label: 'Region' },
+          { key: 'price', label: 'Price' },
+          { key: 'trend', label: 'Trend' }
+        ],
+        'marketdata'
       )}
 
       {/* Forum Posts */}
