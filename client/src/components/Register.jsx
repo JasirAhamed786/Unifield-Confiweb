@@ -1,0 +1,356 @@
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import axios from 'axios';
+import { motion } from 'framer-motion';
+import { Eye, EyeOff, User, Mail, Lock, MapPin, AlertCircle, Globe } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { AuthContext } from '../contexts/AuthContext';
+
+const Register = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch
+  } = useForm();
+
+  const password = watch('password');
+
+  const onSubmit = async (data) => {
+    setLoading(true);
+
+    try {
+      await axios.post('http://localhost:5000/api/auth/register', data);
+      toast.success('Account created successfully!');
+
+      // Auto login after registration
+      const loginRes = await axios.post('http://localhost:5000/api/auth/login', {
+        email: data.email,
+        password: data.password
+      });
+      login(loginRes.data.token, loginRes.data.user);
+      navigate('/dashboard');
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-secondary/10 to-accent/10 py-12 px-4 sm:px-6 lg:px-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-2xl"
+      >
+        <div className="text-center">
+          <div className="mx-auto h-12 w-12 bg-secondary rounded-full flex items-center justify-center mb-4">
+            <User className="h-6 w-6 text-white" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900">
+            Join UniField
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Create your account to access agricultural resources
+          </p>
+        </div>
+
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <div className="space-y-4">
+            {/* Name Field */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="name"
+                  type="text"
+                  autoComplete="name"
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors ${
+                    errors.name ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  placeholder="Enter your full name"
+                  {...register('name', {
+                    required: 'Full name is required',
+                    minLength: {
+                      value: 2,
+                      message: 'Name must be at least 2 characters'
+                    }
+                  })}
+                />
+              </div>
+              {errors.name && (
+                <div className="flex items-center mt-1 text-sm text-red-600">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  {errors.name.message}
+                </div>
+              )}
+            </div>
+
+            {/* Email Field */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors ${
+                    errors.email ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  placeholder="Enter your email"
+                  {...register('email', {
+                    required: 'Email is required',
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: 'Invalid email address'
+                    }
+                  })}
+                />
+              </div>
+              {errors.email && (
+                <div className="flex items-center mt-1 text-sm text-red-600">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  {errors.email.message}
+                </div>
+              )}
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors ${
+                    errors.password ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  placeholder="Create a password"
+                  {...register('password', {
+                    required: 'Password is required',
+                    minLength: {
+                      value: 6,
+                      message: 'Password must be at least 6 characters'
+                    },
+                    pattern: {
+                      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+                      message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+                    }
+                  })}
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  )}
+                </button>
+              </div>
+              {errors.password && (
+                <div className="flex items-center mt-1 text-sm text-red-600">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  {errors.password.message}
+                </div>
+              )}
+            </div>
+
+            {/* Confirm Password Field */}
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors ${
+                    errors.confirmPassword ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  placeholder="Confirm your password"
+                  {...register('confirmPassword', {
+                    required: 'Please confirm your password',
+                    validate: value => value === password || 'Passwords do not match'
+                  })}
+                />
+              </div>
+              {errors.confirmPassword && (
+                <div className="flex items-center mt-1 text-sm text-red-600">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  {errors.confirmPassword.message}
+                </div>
+              )}
+            </div>
+
+            {/* Role Field */}
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+                I am a
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400" />
+                </div>
+                <select
+                  id="role"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                  {...register('role', { required: 'Please select your role' })}
+                >
+                  <option value="Farmer">Farmer</option>
+                  <option value="Expert">Agricultural Expert</option>
+                  <option value="Admin">Administrator</option>
+                </select>
+              </div>
+              {errors.role && (
+                <div className="flex items-center mt-1 text-sm text-red-600">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  {errors.role.message}
+                </div>
+              )}
+            </div>
+
+            {/* Language Preference */}
+            <div>
+              <label htmlFor="languagePref" className="block text-sm font-medium text-gray-700 mb-1">
+                Preferred Language
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Globe className="h-5 w-5 text-gray-400" />
+                </div>
+                <select
+                  id="languagePref"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                  {...register('languagePref')}
+                >
+                  <option value="EN">English</option>
+                  <option value="HI">Hindi</option>
+                  <option value="ES">Spanish</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Location Field */}
+            <div>
+              <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+                Location
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MapPin className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="location"
+                  type="text"
+                  autoComplete="address-level2"
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors ${
+                    errors.location ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  placeholder="City, State/Country"
+                  {...register('location', {
+                    required: 'Location is required'
+                  })}
+                />
+              </div>
+              {errors.location && (
+                <div className="flex items-center mt-1 text-sm text-red-600">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  {errors.location.message}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center">
+            <input
+              id="terms"
+              name="terms"
+              type="checkbox"
+              className="h-4 w-4 text-secondary focus:ring-secondary border-gray-300 rounded"
+              {...register('terms', {
+                required: 'You must accept the terms and conditions'
+              })}
+            />
+            <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
+              I agree to the{' '}
+              <a href="#" className="text-secondary hover:text-secondary/80 font-medium">
+                Terms and Conditions
+              </a>{' '}
+              and{' '}
+              <a href="#" className="text-secondary hover:text-secondary/80 font-medium">
+                Privacy Policy
+              </a>
+            </label>
+          </div>
+          {errors.terms && (
+            <div className="flex items-center text-sm text-red-600">
+              <AlertCircle className="h-4 w-4 mr-1" />
+              {errors.terms.message}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-secondary hover:bg-secondary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {loading ? (
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Creating account...
+              </div>
+            ) : (
+              'Create Account'
+            )}
+          </button>
+
+          <div className="text-center">
+            <span className="text-sm text-gray-600">
+              Already have an account?{' '}
+              <Link
+                to="/login"
+                className="font-medium text-secondary hover:text-secondary/80 transition-colors"
+              >
+                Sign in here
+              </Link>
+            </span>
+          </div>
+        </form>
+      </motion.div>
+    </div>
+  );
+};
+
+export default Register;
