@@ -36,12 +36,12 @@ const AdminPanel = () => {
   const fetchStats = async () => {
     try {
       const [usersRes, cropsRes, schemesRes, researchRes, policiesRes, postsRes] = await Promise.all([
-        axios.get('http://localhost:5003/api/users'),
-        axios.get('http://localhost:5003/api/cropguides'),
-        axios.get('http://localhost:5003/api/schemes'),
-        axios.get('http://localhost:5003/api/research'),
-        axios.get('http://localhost:5003/api/policies'),
-        axios.get('http://localhost:5003/api/forumposts')
+        axios.get('http://localhost:5001/api/users'),
+        axios.get('http://localhost:5001/api/cropguides'),
+        axios.get('http://localhost:5001/api/schemes'),
+        axios.get('http://localhost:5001/api/research'),
+        axios.get('http://localhost:5001/api/policies'),
+        axios.get('http://localhost:5001/api/forumposts')
       ]);
 
       setStats({

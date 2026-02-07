@@ -18,9 +18,9 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const [weatherRes, marketRes, postsRes] = await Promise.all([
-          axios.get('http://localhost:5003/api/weather'),
-          axios.get('http://localhost:5003/api/marketdata'),
-          axios.get('http://localhost:5003/api/forumposts')
+          axios.get('http://localhost:5001/api/weather'),
+          axios.get('http://localhost:5001/api/marketdata'),
+          axios.get('http://localhost:5001/api/forumposts')
         ]);
         setWeather(weatherRes.data);
         setMarketData(marketRes.data);

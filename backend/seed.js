@@ -796,31 +796,31 @@ const seedData = async () => {
       {
         cropName: 'Wheat',
         region: 'North America',
-        price: 320,
+        price: 26560,
         trend: 'Up'
       },
       {
         cropName: 'Rice',
         region: 'Asia',
-        price: 410,
+        price: 34030,
         trend: 'Down'
       },
       {
         cropName: 'Corn',
         region: 'Global',
-        price: 250,
+        price: 20750,
         trend: 'Up'
       },
       {
         cropName: 'Soybean',
         region: 'South America',
-        price: 380,
+        price: 31540,
         trend: 'Down'
       },
       {
         cropName: 'Cotton',
         region: 'India',
-        price: 150,
+        price: 12450,
         trend: 'Up'
       }
     ]);
