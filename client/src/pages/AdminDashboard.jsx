@@ -46,6 +46,7 @@ const AdminDashboard = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
+  const [currentType, setCurrentType] = useState(null);
   const [formData, setFormData] = useState({});
   const [imageFile, setImageFile] = useState(null);
 
@@ -59,7 +60,7 @@ const AdminDashboard = () => {
   const fetchStats = async () => {
     try {
       const [usersRes, cropsRes, schemesRes, researchRes, policiesRes, postsRes, marketdataRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/users'),
+        axios.get('http://localhost:5000/api/users', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }),
         axios.get('http://localhost:5000/api/cropguides'),
         axios.get('http://localhost:5000/api/schemes'),
         axios.get('http://localhost:5000/api/research'),
@@ -145,12 +146,14 @@ const AdminDashboard = () => {
   };
 
   const handleEdit = (type, item) => {
+    setCurrentType(type);
     setCurrentItem(item);
     setFormData({ ...item });
     setShowEditModal(true);
   };
 
   const handleAddNew = (type) => {
+    setCurrentType(type);
     setCurrentItem(null);
     setFormData({});
     setImageFile(null);
@@ -161,37 +164,119 @@ const AdminDashboard = () => {
     e.preventDefault();
 
     try {
-      const formDataToSend = new FormData();
-      Object.keys(formData).forEach(key => {
-        formDataToSend.append(key, formData[key]);
-      });
-      if (imageFile) {
-        formDataToSend.append('image', imageFile);
+      let dataToSend;
+      let headers = {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      };
+
+      if (type === 'crop' || type === 'scheme') {
+        // Types that support images
+        dataToSend = new FormData();
+        Object.keys(formData).forEach(key => {
+          if (formData[key] !== null && formData[key] !== undefined) {
+            dataToSend.append(key, formData[key]);
+          }
+        });
+        if (imageFile) {
+          dataToSend.append('image', imageFile);
+        }
+        // Let axios set Content-Type for FormData
+      } else {
+        // Other types - send as JSON
+        dataToSend = formData;
+        headers['Content-Type'] = 'application/json';
       }
 
       let endpoint;
       let method = currentItem ? 'put' : 'post';
       switch (type) {
         case 'crop': endpoint = currentItem ? `api/cropguides/${currentItem._id}` : 'api/cropguides'; break;
-        // Add other cases as needed
+        case 'marketdata': endpoint = currentItem ? `api/marketdata/${currentItem._id}` : 'api/marketdata'; break;
+        case 'scheme': endpoint = currentItem ? `api/schemes/${currentItem._id}` : 'api/schemes'; break;
+        case 'research': endpoint = currentItem ? `api/research/${currentItem._id}` : 'api/research'; break;
+        case 'policy': endpoint = currentItem ? `api/policies/${currentItem._id}` : 'api/policies'; break;
+        case 'post': endpoint = currentItem ? `api/forumposts/${currentItem._id}` : 'api/forumposts'; break;
         default: return;
       }
 
-      await axios[method](`http://localhost:5000/${endpoint}`, formDataToSend, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      await axios[method](`http://localhost:5000/${endpoint}`, dataToSend, { headers });
 
       toast.success(`${type} ${currentItem ? 'updated' : 'created'} successfully`);
       setShowAddModal(false);
       setShowEditModal(false);
+      setCurrentType(null);
       fetchStats();
       fetchData();
     } catch (err) {
       console.log(err);
       toast.error(`Failed to ${currentItem ? 'update' : 'create'} ${type}`);
+    }
+  };
+
+  const getFormFields = (type) => {
+    switch (type) {
+      case 'crop':
+        return [
+          { key: 'name', label: 'Name', type: 'text', required: true },
+          { key: 'season', label: 'Season', type: 'text', required: true },
+          { key: 'soil', label: 'Soil Type', type: 'text', required: true },
+          { key: 'water', label: 'Water Requirements', type: 'text', required: true },
+          { key: 'image', label: 'Image', type: 'file', required: !currentItem }
+        ];
+      case 'scheme':
+        return [
+          { key: 'title', label: 'Title', type: 'text', required: true },
+          { key: 'description', label: 'Description', type: 'textarea', required: true },
+          { key: 'category', label: 'Category', type: 'text', required: true },
+          { key: 'eligibility', label: 'Eligibility', type: 'textarea', required: true },
+          { key: 'benefits', label: 'Benefits', type: 'textarea', required: true },
+          { key: 'applicationProcess', label: 'Application Process', type: 'textarea', required: true },
+          { key: 'deadline', label: 'Deadline', type: 'date', required: false },
+          { key: 'contactInfo', label: 'Contact Info', type: 'text', required: false },
+          { key: 'region', label: 'Region', type: 'text', required: true },
+          { key: 'isActive', label: 'Active', type: 'checkbox', required: false },
+          { key: 'image', label: 'Image', type: 'file', required: !currentItem }
+        ];
+      case 'research':
+        return [
+          { key: 'title', label: 'Title', type: 'text', required: true },
+          { key: 'summary', label: 'Summary', type: 'textarea', required: true },
+          { key: 'content', label: 'Content', type: 'textarea', required: true },
+          { key: 'author', label: 'Author', type: 'text', required: true },
+          { key: 'category', label: 'Category', type: 'text', required: true },
+          { key: 'tags', label: 'Tags', type: 'text', required: false },
+          { key: 'publishedDate', label: 'Published Date', type: 'date', required: false },
+          { key: 'isPublished', label: 'Published', type: 'checkbox', required: false }
+        ];
+      case 'policy':
+        return [
+          { key: 'title', label: 'Title', type: 'text', required: true },
+          { key: 'summary', label: 'Summary', type: 'textarea', required: true },
+          { key: 'content', label: 'Content', type: 'textarea', required: true },
+          { key: 'category', label: 'Category', type: 'text', required: true },
+          { key: 'region', label: 'Region', type: 'text', required: true },
+          { key: 'effectiveDate', label: 'Effective Date', type: 'date', required: false },
+          { key: 'implementingAuthority', label: 'Implementing Authority', type: 'text', required: false },
+          { key: 'contactInfo', label: 'Contact Info', type: 'text', required: false },
+          { key: 'isActive', label: 'Active', type: 'checkbox', required: false }
+        ];
+      case 'marketdata':
+        return [
+          { key: 'cropName', label: 'Crop Name', type: 'text', required: true },
+          { key: 'region', label: 'Region', type: 'text', required: true },
+          { key: 'price', label: 'Price', type: 'number', required: true },
+          { key: 'trend', label: 'Trend', type: 'text', required: true }
+        ];
+      case 'post':
+        return [
+          { key: 'title', label: 'Title', type: 'text', required: true },
+          { key: 'content', label: 'Content', type: 'textarea', required: true },
+          { key: 'tags', label: 'Tags', type: 'text', required: false },
+          { key: 'upvotes', label: 'Upvotes', type: 'number', required: false },
+          { key: 'expertReplies', label: 'Expert Replies', type: 'checkbox', required: false }
+        ];
+      default:
+        return [];
     }
   };
 
@@ -566,70 +651,58 @@ const AdminDashboard = () => {
         </main>
       </div>
 
-      {/* Add/Edit Modal for Crop Guides */}
-      {(showAddModal || showEditModal) && (
+      {/* Add/Edit Modal */}
+      {(showAddModal || showEditModal) && currentType && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[80vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">
-              {showAddModal ? 'Add New Crop Guide' : 'Edit Crop Guide'}
+              {showAddModal ? `Add New ${currentType.replace('-', ' ')}` : `Edit ${currentType.replace('-', ' ')}`}
             </h3>
-            <form onSubmit={(e) => handleFormSubmit(e, 'crop')}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Name</label>
-                <input
-                  type="text"
-                  value={formData.name || ''}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Season</label>
-                <input
-                  type="text"
-                  value={formData.season || ''}
-                  onChange={(e) => setFormData({ ...formData, season: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Soil Type</label>
-                <input
-                  type="text"
-                  value={formData.soil || ''}
-                  onChange={(e) => setFormData({ ...formData, soil: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Water Requirements</label>
-                <input
-                  type="text"
-                  value={formData.water || ''}
-                  onChange={(e) => setFormData({ ...formData, water: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Image</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setImageFile(e.target.files[0])}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                  required={!currentItem}
-                />
-              </div>
+            <form onSubmit={(e) => handleFormSubmit(e, currentType)}>
+              {getFormFields(currentType).map((field) => (
+                <div key={field.key} className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">{field.label}</label>
+                  {field.type === 'textarea' ? (
+                    <textarea
+                      value={formData[field.key] || ''}
+                      onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                      required={field.required}
+                      rows={3}
+                    />
+                  ) : field.type === 'checkbox' ? (
+                    <input
+                      type="checkbox"
+                      checked={formData[field.key] || false}
+                      onChange={(e) => setFormData({ ...formData, [field.key]: e.target.checked })}
+                      className="mt-1"
+                    />
+                  ) : field.type === 'file' ? (
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setImageFile(e.target.files[0])}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                      required={field.required}
+                    />
+                  ) : (
+                    <input
+                      type={field.type}
+                      value={formData[field.key] || ''}
+                      onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                      required={field.required}
+                    />
+                  )}
+                </div>
+              ))}
               <div className="flex justify-end space-x-2">
                 <button
                   type="button"
                   onClick={() => {
                     setShowAddModal(false);
                     setShowEditModal(false);
+                    setCurrentType(null);
                   }}
                   className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200"
                 >

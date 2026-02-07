@@ -7,8 +7,8 @@
 - Cannot do some operations: Likely auth issues in other routes
 
 ## Tasks
-- [ ] Fix fetchStats in AdminDashboard.jsx to include Authorization header in all API calls
-- [ ] Update POST /api/cropguides route in server.js to use multer for image upload and set imageUrl
+- [x] Fix fetchStats in AdminDashboard.jsx to include Authorization header in all API calls
+- [x] Update POST /api/cropguides route in server.js to use multer for image upload and set imageUrl
 - [ ] Test crop creation and image visualization
 - [ ] Check and fix auth issues in other admin operations (edit, delete for crops and other entities)
 - [ ] Verify all admin operations work correctly

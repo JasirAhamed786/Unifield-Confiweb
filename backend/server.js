@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -238,14 +239,22 @@ app.get('/api/schemes/:id', async (req, res) => {
   res.json(scheme);
 });
 
-app.post('/api/schemes', verifyToken, async (req, res) => {
-  const scheme = new GovernmentScheme(req.body);
+app.post('/api/schemes', upload.single('image'), verifyToken, async (req, res) => {
+  const schemeData = { ...req.body };
+  if (req.file) {
+    schemeData.imageUrl = `/uploads/${req.file.filename}`;
+  }
+  const scheme = new GovernmentScheme(schemeData);
   await scheme.save();
   res.json(scheme);
 });
 
-app.put('/api/schemes/:id', verifyToken, async (req, res) => {
-  const scheme = await GovernmentScheme.findByIdAndUpdate(req.params.id, req.body, { new: true });
+app.put('/api/schemes/:id', upload.single('image'), verifyToken, async (req, res) => {
+  const updateData = { ...req.body };
+  if (req.file) {
+    updateData.imageUrl = `/uploads/${req.file.filename}`;
+  }
+  const scheme = await GovernmentScheme.findByIdAndUpdate(req.params.id, updateData, { new: true });
   res.json(scheme);
 });
 
