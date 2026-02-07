@@ -573,7 +573,7 @@ const AdminDashboard = () => {
                     {data.crops.map((crop) => (
                       <tr key={crop._id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <img src={`http://localhost:5000${crop.imageUrl}`} alt={crop.name} className="h-12 w-12 object-cover rounded" />
+                          <img src={crop.imageUrl.startsWith('http') ? crop.imageUrl : `http://localhost:5000${crop.imageUrl}`} alt={crop.name} className="h-12 w-12 object-cover rounded" />
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{crop.name}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{crop.season}</td>

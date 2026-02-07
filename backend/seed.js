@@ -821,7 +821,7 @@ const seedData = async () => {
         cropName: 'Cotton',
         region: 'India',
         price: 12450,
-        trend: 'Up'
+        trend: 'Stable'
       }
     ]);
 
