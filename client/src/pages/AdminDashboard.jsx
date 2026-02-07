@@ -148,7 +148,11 @@ const AdminDashboard = () => {
   const handleEdit = (type, item) => {
     setCurrentType(type);
     setCurrentItem(item);
-    setFormData({ ...item });
+    const itemCopy = { ...item };
+    // Stringify array fields for form display
+    if (Array.isArray(itemCopy.diseases)) itemCopy.diseases = JSON.stringify(itemCopy.diseases);
+    if (Array.isArray(itemCopy.tags)) itemCopy.tags = JSON.stringify(itemCopy.tags);
+    setFormData(itemCopy);
     setShowEditModal(true);
   };
 
@@ -169,12 +173,23 @@ const AdminDashboard = () => {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       };
 
+      // Filter out _id and prepare data
+      const cleanFormData = { ...formData };
+      delete cleanFormData._id;
+      delete cleanFormData.__v;
+      delete cleanFormData.createdAt;
+      delete cleanFormData.updatedAt;
+
       if (type === 'crop' || type === 'scheme') {
         // Types that support images
         dataToSend = new FormData();
-        Object.keys(formData).forEach(key => {
-          if (formData[key] !== null && formData[key] !== undefined) {
-            dataToSend.append(key, formData[key]);
+        Object.keys(cleanFormData).forEach(key => {
+          let value = cleanFormData[key];
+          if (Array.isArray(value)) {
+            value = JSON.stringify(value);
+          }
+          if (value !== null && value !== undefined && value !== '') {
+            dataToSend.append(key, value);
           }
         });
         if (imageFile) {
@@ -183,7 +198,7 @@ const AdminDashboard = () => {
         // Let axios set Content-Type for FormData
       } else {
         // Other types - send as JSON
-        dataToSend = formData;
+        dataToSend = cleanFormData;
         headers['Content-Type'] = 'application/json';
       }
 
@@ -199,17 +214,19 @@ const AdminDashboard = () => {
         default: return;
       }
 
-      await axios[method](`http://localhost:5000/${endpoint}`, dataToSend, { headers });
+      const response = await axios[method](`http://localhost:5000/${endpoint}`, dataToSend, { headers });
 
       toast.success(`${type} ${currentItem ? 'updated' : 'created'} successfully`);
       setShowAddModal(false);
       setShowEditModal(false);
       setCurrentType(null);
+      setFormData({});
+      setImageFile(null);
       fetchStats();
       fetchData();
     } catch (err) {
-      console.log(err);
-      toast.error(`Failed to ${currentItem ? 'update' : 'create'} ${type}`);
+      console.log('Error details:', err.response?.data || err.message);
+      toast.error(`Failed to ${currentItem ? 'update' : 'create'} ${type}: ${err.response?.data?.message || err.message}`);
     }
   };
 
@@ -221,6 +238,7 @@ const AdminDashboard = () => {
           { key: 'season', label: 'Season', type: 'text', required: true },
           { key: 'soil', label: 'Soil Type', type: 'text', required: true },
           { key: 'water', label: 'Water Requirements', type: 'text', required: true },
+          { key: 'diseases', label: 'Diseases (JSON)', type: 'textarea', required: false },
           { key: 'image', label: 'Image', type: 'file', required: !currentItem }
         ];
       case 'scheme':

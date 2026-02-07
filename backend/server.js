@@ -159,12 +159,34 @@ app.get('/api/cropguides/:id', async (req, res) => {
 
 app.post('/api/cropguides', upload.single('image'), verifyToken, async (req, res) => {
   const { name, season, soil, water, diseases } = req.body;
+  let parsedDiseases = [];
+  if (diseases && diseases !== 'undefined' && diseases !== '') {
+    if (typeof diseases === 'string') {
+      try {
+        // Check if it's already a JSON string
+        if (diseases.startsWith('[') || diseases.startsWith('{')) {
+          parsedDiseases = JSON.parse(diseases);
+        } else {
+          // If it's not JSON, treat as empty array
+          parsedDiseases = [];
+        }
+        if (!Array.isArray(parsedDiseases)) {
+          parsedDiseases = [];
+        }
+      } catch (e) {
+        console.log('Invalid diseases JSON, using empty array:', diseases);
+        parsedDiseases = [];
+      }
+    } else if (Array.isArray(diseases)) {
+      parsedDiseases = diseases;
+    }
+  }
   const guideData = {
     name,
     season,
     soil,
     water,
-    diseases: diseases ? JSON.parse(diseases) : []
+    diseases: parsedDiseases
   };
 
   if (req.file) {
@@ -178,12 +200,25 @@ app.post('/api/cropguides', upload.single('image'), verifyToken, async (req, res
 
 app.put('/api/cropguides/:id', upload.single('image'), verifyToken, async (req, res) => {
   const { name, season, soil, water, diseases } = req.body;
+  let parsedDiseases = [];
+  if (diseases) {
+    if (typeof diseases === 'string') {
+      try {
+        parsedDiseases = JSON.parse(diseases);
+      } catch (e) {
+        console.log('Invalid diseases JSON:', diseases);
+        parsedDiseases = [];
+      }
+    } else if (Array.isArray(diseases)) {
+      parsedDiseases = diseases;
+    }
+  }
   const updateData = {
     name,
     season,
     soil,
     water,
-    diseases: diseases ? JSON.parse(diseases) : []
+    diseases: parsedDiseases
   };
 
   if (req.file) {
@@ -279,8 +314,12 @@ app.get('/api/research/:id', async (req, res) => {
   res.json(update);
 });
 
-app.post('/api/research', verifyToken, async (req, res) => {
-  const update = new ResearchUpdate(req.body);
+app.post('/api/research', upload.single('image'), verifyToken, async (req, res) => {
+  const updateData = { ...req.body };
+  if (req.file) {
+    updateData.imageUrl = `/uploads/${req.file.filename}`;
+  }
+  const update = new ResearchUpdate(updateData);
   await update.save();
   res.json(update);
 });
@@ -342,13 +381,33 @@ app.post('/api/forumposts', verifyToken, async (req, res) => {
 });
 
 app.put('/api/forumposts/:id', verifyToken, async (req, res) => {
-  const post = await ForumPost.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  const updateData = { ...req.body };
+  if (updateData.tags && typeof updateData.tags === 'string') {
+    updateData.tags = JSON.parse(updateData.tags);
+  }
+  const post = await ForumPost.findByIdAndUpdate(req.params.id, updateData, { new: true });
   res.json(post);
 });
 
 app.delete('/api/forumposts/:id', verifyToken, async (req, res) => {
   await ForumPost.findByIdAndDelete(req.params.id);
   res.json({ message: 'Post deleted' });
+});
+
+// Webhook routes
+app.post('/webhooks/github', (req, res) => {
+  console.log('GitHub webhook received:', req.body);
+  res.status(200).json({ message: 'GitHub webhook processed' });
+});
+
+app.post('/webhooks/gitlab', (req, res) => {
+  console.log('GitLab webhook received:', req.body);
+  res.status(200).json({ message: 'GitLab webhook processed' });
+});
+
+app.post('/webhooks/bitbucket', (req, res) => {
+  console.log('Bitbucket webhook received:', req.body);
+  res.status(200).json({ message: 'Bitbucket webhook processed' });
 });
 
 // restart
