@@ -1049,7 +1049,7 @@ const seedData = async () => {
       {
         title: 'Agricultural Technology Management Agency',
         description: 'Disseminating agricultural technologies',
-        category: 'Technology',
+        category: 'Other',
         eligibility: 'Farmers and extension workers',
         benefits: 'Training and demonstration programs',
         applicationProcess: 'Through ATMA centers',
@@ -1238,33 +1238,30 @@ const seedData = async () => {
       }
     ]);
 
-    // Seed Forum Posts - commented out to prevent seeding since users are not seeded
-    // await ForumPost.insertMany([
-    //   {
-    //     userID: users[0]._id,
-    //     title: 'How to control aphids in tomato plants?',
-    //     content: 'I\'m seeing a lot of aphids on my tomato plants. What are the best organic methods to control them without harming beneficial insects?',
-    //     tags: ['pest-control', 'organic-farming', 'tomatoes'],
-    //     upvotes: 15,
-    //     expertReplies: true
-    //   },
-    //   {
-    //     userID: users[1]._id,
-    //     title: 'Best practices for soil health management',
-    //     content: 'As an agricultural expert, I wanted to share some key practices for maintaining soil health: crop rotation, cover cropping, organic matter addition, and minimal tillage.',
-    //     tags: ['soil-health', 'sustainable-farming', 'expert-advice'],
-    //     upvotes: 28,
-    //     expertReplies: false
-    //   },
-    //   {
-    //     userID: users[0]._id,
-    //     title: 'Water conservation techniques for drought-prone areas',
-    //     content: 'Living in a drought-prone region, I\'m looking for effective water conservation methods. Any recommendations for drip irrigation or rainwater harvesting?',
-    //     tags: ['water-conservation', 'drought', 'irrigation'],
-    //     upvotes: 22,
-    //     expertReplies: true
-    //   }
-    // ]);
+    // Seed Forum Posts
+    await ForumPost.insertMany([
+      {
+        title: 'How to control aphids in tomato plants?',
+        content: 'I\'m seeing a lot of aphids on my tomato plants. What are the best organic methods to control them without harming beneficial insects?',
+        tags: ['pest-control', 'organic-farming', 'tomatoes'],
+        upvotes: 15,
+        expertReplies: true
+      },
+      {
+        title: 'Best practices for soil health management',
+        content: 'As an agricultural expert, I wanted to share some key practices for maintaining soil health: crop rotation, cover cropping, organic matter addition, and minimal tillage.',
+        tags: ['soil-health', 'sustainable-farming', 'expert-advice'],
+        upvotes: 28,
+        expertReplies: false
+      },
+      {
+        title: 'Water conservation techniques for drought-prone areas',
+        content: 'Living in a drought-prone region, I\'m looking for effective water conservation methods. Any recommendations for drip irrigation or rainwater harvesting?',
+        tags: ['water-conservation', 'drought', 'irrigation'],
+        upvotes: 22,
+        expertReplies: true
+      }
+    ]);
 
     console.log('Database seeded successfully!');
     process.exit(0);

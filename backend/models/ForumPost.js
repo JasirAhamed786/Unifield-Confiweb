@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const forumPostSchema = new mongoose.Schema({
-  userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   title: { type: String, required: true },
   content: { type: String, required: true },
   tags: [{ type: String }],

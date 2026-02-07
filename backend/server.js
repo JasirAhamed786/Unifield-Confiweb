@@ -75,6 +75,36 @@ app.post('/api/auth/login', async (req, res) => {
   res.json({ token, user: { _id: user._id, name: user.name, email: user.email, role: user.role } });
 });
 
+// Create Admin route
+app.post('/api/auth/createAdmin', async (req, res) => {
+  const { name, email, password, languagePref, location } = req.body;
+
+  // Check if admin already exists
+  const existingAdmin = await User.findOne({ email, role: 'Admin' });
+  if (existingAdmin) {
+    return res.status(400).json({ message: 'Admin already exists with this email' });
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  const admin = new User({
+    name,
+    email,
+    password: hashedPassword,
+    role: 'Admin',
+    languagePref: languagePref || 'EN',
+    location: location || 'Global'
+  });
+
+  try {
+    await admin.save();
+    res.status(201).json({ message: 'Admin created successfully', admin: { _id: admin._id, name: admin.name, email: admin.email, role: admin.role } });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 // Protected user routes
 app.get('/api/users', verifyToken, async (req, res) => {
   const users = await User.find().select('-password');
