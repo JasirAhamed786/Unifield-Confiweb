@@ -2,14 +2,16 @@ import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { motion } from 'framer-motion';
-import { Eye, EyeOff, User, Mail, Lock, MapPin, AlertCircle, Globe } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Eye, EyeOff, User, Mail, Lock, MapPin, AlertCircle, Globe, X, FileText, Shield } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../contexts/AuthContext';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -305,13 +307,21 @@ const Register = () => {
             />
             <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
               I agree to the{' '}
-              <a href="#" className="text-secondary hover:text-secondary/80 font-medium">
+              <button
+                type="button"
+                onClick={() => setShowTermsModal(true)}
+                className="text-secondary hover:text-secondary/80 font-medium underline"
+              >
                 Terms and Conditions
-              </a>{' '}
+              </button>{' '}
               and{' '}
-              <a href="#" className="text-secondary hover:text-secondary/80 font-medium">
+              <button
+                type="button"
+                onClick={() => setShowPrivacyModal(true)}
+                className="text-secondary hover:text-secondary/80 font-medium underline"
+              >
                 Privacy Policy
-              </a>
+              </button>
             </label>
           </div>
           {errors.terms && (
@@ -349,6 +359,181 @@ const Register = () => {
           </div>
         </form>
       </motion.div>
+
+      {/* Terms and Conditions Modal */}
+      <AnimatePresence>
+        {showTermsModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            onClick={() => setShowTermsModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <FileText className="h-6 w-6 text-secondary mr-2" />
+                    <h3 className="text-xl font-bold text-gray-900">Terms and Conditions</h3>
+                  </div>
+                  <button
+                    onClick={() => setShowTermsModal(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+                <div className="prose prose-sm max-w-none text-gray-700">
+                  <h4 className="text-lg font-semibold mb-3">1. Acceptance of Terms</h4>
+                  <p className="mb-4">
+                    By accessing and using UniField, you accept and agree to be bound by the terms and provision of this agreement.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">2. Use License</h4>
+                  <p className="mb-4">
+                    Permission is granted to temporarily access the materials (information or software) on UniField's website for personal, non-commercial transitory viewing only.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">3. User Responsibilities</h4>
+                  <p className="mb-4">
+                    Users are responsible for maintaining the confidentiality of their account and password. Users agree to accept responsibility for all activities that occur under their account.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">4. Content Policy</h4>
+                  <p className="mb-4">
+                    Users may not post content that is illegal, harmful, threatening, abusive, harassing, defamatory, vulgar, obscene, or invasive of another's privacy.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">5. Privacy</h4>
+                  <p className="mb-4">
+                    Your privacy is important to us. Please review our Privacy Policy, which also governs your use of UniField, to understand our practices.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">6. Termination</h4>
+                  <p className="mb-4">
+                    We may terminate or suspend access to our service immediately, without prior notice or liability, for any reason whatsoever.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">7. Limitation of Liability</h4>
+                  <p className="mb-4">
+                    In no event shall UniField or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit) arising out of the use or inability to use the materials on UniField's website.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">8. Governing Law</h4>
+                  <p className="mb-4">
+                    These terms and conditions are governed by and construed in accordance with applicable laws, and any disputes relating to these terms and conditions will be subject to the exclusive jurisdiction of the courts.
+                  </p>
+                </div>
+                <div className="mt-6 flex justify-end">
+                  <button
+                    onClick={() => setShowTermsModal(false)}
+                    className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors"
+                  >
+                    I Understand
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Privacy Policy Modal */}
+      <AnimatePresence>
+        {showPrivacyModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            onClick={() => setShowPrivacyModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <Shield className="h-6 w-6 text-secondary mr-2" />
+                    <h3 className="text-xl font-bold text-gray-900">Privacy Policy</h3>
+                  </div>
+                  <button
+                    onClick={() => setShowPrivacyModal(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+                <div className="prose prose-sm max-w-none text-gray-700">
+                  <h4 className="text-lg font-semibold mb-3">1. Information We Collect</h4>
+                  <p className="mb-4">
+                    We collect information you provide directly to us, such as when you create an account, use our services, or contact us for support. This may include your name, email address, location, and agricultural preferences.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">2. How We Use Your Information</h4>
+                  <p className="mb-4">
+                    We use the information we collect to provide, maintain, and improve our services, process transactions, send you technical notices and support messages, and respond to your comments and questions.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">3. Information Sharing</h4>
+                  <p className="mb-4">
+                    We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy or as required by law.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">4. Data Security</h4>
+                  <p className="mb-4">
+                    We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">5. Cookies and Tracking</h4>
+                  <p className="mb-4">
+                    We use cookies and similar technologies to enhance your experience on our platform, analyze usage patterns, and provide personalized content.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">6. Your Rights</h4>
+                  <p className="mb-4">
+                    You have the right to access, update, or delete your personal information. You may also opt out of certain communications or request data portability.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">7. Children's Privacy</h4>
+                  <p className="mb-4">
+                    Our services are not intended for children under 13. We do not knowingly collect personal information from children under 13.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">8. Changes to This Policy</h4>
+                  <p className="mb-4">
+                    We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "last updated" date.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mb-3">9. Contact Us</h4>
+                  <p className="mb-4">
+                    If you have any questions about this privacy policy, please contact us at privacy@unifield.com.
+                  </p>
+                </div>
+                <div className="mt-6 flex justify-end">
+                  <button
+                    onClick={() => setShowPrivacyModal(false)}
+                    className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors"
+                  >
+                    I Understand
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

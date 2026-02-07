@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Search, User, MessageCircle, LogOut, Menu, X } from 'lucide-react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useContext(AuthContext);
@@ -13,6 +14,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
+    toast.success('Logged out successfully!');
     navigate('/');
   };
 
@@ -63,7 +65,8 @@ const Navbar = () => {
 
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
-                <Link to="/forum" className="bg-secondary text-white px-4 py-2 rounded-md hover:bg-secondary/80 transition-colors">
+                <Link to="/forum" className="bg-secondary text-white px-4 py-2 rounded-md hover:bg-secondary/80 transition-colors flex items-center">
+                  <MessageCircle className="h-5 w-5 mr-2" />
                   {t('Ask Expert')}
                 </Link>
                 <div className="relative group">

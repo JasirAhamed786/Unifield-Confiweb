@@ -21,33 +21,33 @@ const seedData = async () => {
     await ResearchUpdate.deleteMany({});
     await PolicyInformation.deleteMany({});
 
-    // Seed Users
-    const users = await User.insertMany([
-      {
-        name: 'John Farmer',
-        email: 'john@example.com',
-        password: '$2a$10$hashedpassword1', // password: farmer123
-        role: 'Farmer',
-        languagePref: 'EN',
-        location: 'California, USA'
-      },
-      {
-        name: 'Dr. Sarah Expert',
-        email: 'sarah@example.com',
-        password: '$2a$10$hashedpassword2', // password: expert123
-        role: 'Expert',
-        languagePref: 'EN',
-        location: 'Iowa, USA'
-      },
-      {
-        name: 'Admin User',
-        email: 'admin@example.com',
-        password: '$2a$10$hashedpassword3', // password: admin123
-        role: 'Admin',
-        languagePref: 'EN',
-        location: 'Washington, DC'
-      }
-    ]);
+    // Seed Users - commented out to prevent seeding users
+    // const users = await User.insertMany([
+    //   {
+    //     name: 'John Farmer',
+    //     email: 'john@example.com',
+    //     password: '$2a$10$hashedpassword1', // password: farmer123
+    //     role: 'Farmer',
+    //     languagePref: 'EN',
+    //     location: 'California, USA'
+    //   },
+    //   {
+    //     name: 'Dr. Sarah Expert',
+    //     email: 'sarah@example.com',
+    //     password: '$2a$10$hashedpassword2', // password: expert123
+    //     role: 'Expert',
+    //     languagePref: 'EN',
+    //     location: 'Iowa, USA'
+    //   },
+    //   {
+    //     name: 'Admin User',
+    //     email: 'admin@example.com',
+    //     password: '$2a$10$hashedpassword3', // password: admin123
+    //     role: 'Admin',
+    //     languagePref: 'EN',
+    //     location: 'Washington, DC'
+    //   }
+    // ]);
 
     // Seed Crop Guides
     const cropGuides = await CropGuide.insertMany([
@@ -863,6 +863,292 @@ const seedData = async () => {
         region: 'Global',
         imageUrl: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
         isActive: true
+      },
+      {
+        title: 'National Agriculture Market (eNAM)',
+        description: 'Online trading platform for agricultural commodities',
+        category: 'Other',
+        eligibility: 'All farmers and traders registered with mandis',
+        benefits: 'Better price discovery and reduced transaction costs',
+        applicationProcess: 'Register through state agricultural marketing boards',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'eNAM Support: support@enam.gov.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Soil Health Card Scheme',
+        description: 'Comprehensive soil testing and health management program',
+        category: 'Other',
+        eligibility: 'All farmers with cultivable land',
+        benefits: 'Free soil testing and customized fertilizer recommendations',
+        applicationProcess: 'Apply through local agriculture department offices',
+        deadline: new Date('2024-06-30'),
+        contactInfo: 'Soil Health Helpline: 1800-11-6666',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Pradhan Mantri Fasal Bima Yojana',
+        description: 'Comprehensive crop insurance scheme',
+        category: 'Insurance',
+        eligibility: 'All farmers growing notified crops',
+        benefits: 'Financial protection against crop loss due to natural calamities',
+        applicationProcess: 'Through banks and CSC centers',
+        deadline: new Date('2024-07-31'),
+        contactInfo: 'PMFBY Helpline: 1800-11-5656',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'National Mission on Sustainable Agriculture',
+        description: 'Promoting sustainable agricultural practices',
+        category: 'Other',
+        eligibility: 'Farmers interested in sustainable farming',
+        benefits: 'Training, financial assistance for sustainable practices',
+        applicationProcess: 'Apply through state agriculture departments',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'NMSA Support: nmsa@agricoop.nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Rashtriya Krishi Vikas Yojana',
+        description: 'Strengthening agricultural infrastructure',
+        category: 'Other',
+        eligibility: 'State governments and farmer groups',
+        benefits: 'Funding for irrigation, storage, and marketing infrastructure',
+        applicationProcess: 'Through state agriculture plans',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'RKVY Support: rkvy@agricoop.nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Paramparagat Krishi Vikas Yojana',
+        description: 'Promoting organic farming practices',
+        category: 'Other',
+        eligibility: 'Groups of 50 farmers for cluster formation',
+        benefits: '₹50,000 per hectare for organic inputs and certification',
+        applicationProcess: 'Apply through state agriculture departments',
+        deadline: new Date('2024-08-31'),
+        contactInfo: 'PKVY Helpline: 011-23381385',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'National Food Security Mission',
+        description: 'Increasing production of rice, wheat, and pulses',
+        category: 'Other',
+        eligibility: 'Farmers in identified districts',
+        benefits: 'Subsidies for seeds, fertilizers, and equipment',
+        applicationProcess: 'Through state agriculture departments',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'NFSM Support: nfsm@agricoop.nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Dairy Entrepreneurship Development Scheme',
+        description: 'Supporting dairy entrepreneurship',
+        category: 'Other',
+        eligibility: 'Individuals and groups interested in dairy business',
+        benefits: 'Up to ₹30 lakhs for dairy infrastructure',
+        applicationProcess: 'Apply through NABARD',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'NABARD: 022-26530000',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Mission for Integrated Development of Horticulture',
+        description: 'Holistic development of horticulture sector',
+        category: 'Other',
+        eligibility: 'Farmers and farmer groups',
+        benefits: 'Support for nursery, irrigation, and post-harvest infrastructure',
+        applicationProcess: 'Through state horticulture missions',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'MIDH Support: midh@nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Natoional Bamboo Mission',
+        description: 'Promoting bamboo cultivation and utilization',
+        category: 'Other',
+        eligibility: 'Farmers and entrepreneurs',
+        benefits: 'Subsidies for bamboo plantation and processing',
+        applicationProcess: 'Through state forest departments',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'NBM Support: nbm@nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Sub-Mission on Agricultural Mechanization',
+        description: 'Promoting farm mechanization',
+        category: 'Other',
+        eligibility: 'Individual farmers and groups',
+        benefits: 'Subsidies up to 50% for agricultural machinery',
+        applicationProcess: 'Through state agriculture departments',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'SMAM Support: smam@agricoop.nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'National Mission on Oilseeds and Oil Palm',
+        description: 'Increasing oilseed production',
+        category: 'Other',
+        eligibility: 'Farmers growing oilseed crops',
+        benefits: 'Subsidies for seeds, fertilizers, and equipment',
+        applicationProcess: 'Through state agriculture departments',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'NMOOP Support: nmoop@agricoop.nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Coconut Development Board Schemes',
+        description: 'Supporting coconut cultivation and processing',
+        category: 'Other',
+        eligibility: 'Coconut farmers and processors',
+        benefits: 'Subsidies for cultivation and processing equipment',
+        applicationProcess: 'Through Coconut Development Board',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'CDB: 0471-2333171',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Integrated Scheme for Agricultural Marketing',
+        description: 'Strengthening agricultural marketing infrastructure',
+        category: 'Other',
+        eligibility: 'State governments and marketing cooperatives',
+        benefits: 'Funding for wholesale markets and cold storage',
+        applicationProcess: 'Through Ministry of Agriculture',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'ISAM Support: isam@agricoop.nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Agricultural Technology Management Agency',
+        description: 'Disseminating agricultural technologies',
+        category: 'Technology',
+        eligibility: 'Farmers and extension workers',
+        benefits: 'Training and demonstration programs',
+        applicationProcess: 'Through ATMA centers',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'ATMA Support: atma@agricoop.nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'National Livestock Mission',
+        description: 'Sustainable development of livestock sector',
+        category: 'Other',
+        eligibility: 'Livestock farmers and entrepreneurs',
+        benefits: 'Support for breed improvement and infrastructure',
+        applicationProcess: 'Through state animal husbandry departments',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'NLM Support: nlm@nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Blue Revolution Scheme',
+        description: 'Sustainable development of fisheries sector',
+        category: 'Other',
+        eligibility: 'Fish farmers and fishermen',
+        benefits: 'Support for pond development and equipment',
+        applicationProcess: 'Through Department of Fisheries',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'Blue Revolution: fisheries@nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'National Agroforestry Policy Implementation',
+        description: 'Promoting agroforestry practices',
+        category: 'Other',
+        eligibility: 'Farmers interested in tree cultivation',
+        benefits: 'Subsidies for tree plantation and maintenance',
+        applicationProcess: 'Through state forest departments',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'NAP Support: agroforestry@nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Climate Smart Agriculture Mission',
+        description: 'Adapting agriculture to climate change',
+        category: 'Other',
+        eligibility: 'Farmers in climate-vulnerable areas',
+        benefits: 'Support for climate-resilient practices and equipment',
+        applicationProcess: 'Through state agriculture departments',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'CSAM Support: climate@agricoop.nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1569163139394-de4e4f43e4e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Women in Agriculture Program',
+        description: 'Empowering women in agricultural activities',
+        category: 'Other',
+        eligibility: 'Women farmers and entrepreneurs',
+        benefits: 'Training, credit, and equipment support',
+        applicationProcess: 'Through state women and child development departments',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'WIA Support: women@agricoop.nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Youth in Agriculture Program',
+        description: 'Attracting youth to agricultural entrepreneurship',
+        category: 'Other',
+        eligibility: 'Young entrepreneurs aged 18-35',
+        benefits: 'Training, mentorship, and financial support',
+        applicationProcess: 'Through Ministry of Agriculture and Farmers Welfare',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'YIA Support: youth@agricoop.nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
+      },
+      {
+        title: 'Digital Agriculture Mission',
+        description: 'Implementing digital technologies in farming',
+        category: 'Other',
+        eligibility: 'Farmers and agri-tech startups',
+        benefits: 'Support for IoT devices, apps, and digital platforms',
+        applicationProcess: 'Through Ministry of Agriculture',
+        deadline: new Date('2024-12-31'),
+        contactInfo: 'DAM Support: digital@agricoop.nic.in',
+        region: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+        isActive: true
       }
     ]);
 
@@ -952,33 +1238,33 @@ const seedData = async () => {
       }
     ]);
 
-    // Seed Forum Posts
-    await ForumPost.insertMany([
-      {
-        userID: users[0]._id,
-        title: 'How to control aphids in tomato plants?',
-        content: 'I\'m seeing a lot of aphids on my tomato plants. What are the best organic methods to control them without harming beneficial insects?',
-        tags: ['pest-control', 'organic-farming', 'tomatoes'],
-        upvotes: 15,
-        expertReplies: true
-      },
-      {
-        userID: users[1]._id,
-        title: 'Best practices for soil health management',
-        content: 'As an agricultural expert, I wanted to share some key practices for maintaining soil health: crop rotation, cover cropping, organic matter addition, and minimal tillage.',
-        tags: ['soil-health', 'sustainable-farming', 'expert-advice'],
-        upvotes: 28,
-        expertReplies: false
-      },
-      {
-        userID: users[0]._id,
-        title: 'Water conservation techniques for drought-prone areas',
-        content: 'Living in a drought-prone region, I\'m looking for effective water conservation methods. Any recommendations for drip irrigation or rainwater harvesting?',
-        tags: ['water-conservation', 'drought', 'irrigation'],
-        upvotes: 22,
-        expertReplies: true
-      }
-    ]);
+    // Seed Forum Posts - commented out to prevent seeding since users are not seeded
+    // await ForumPost.insertMany([
+    //   {
+    //     userID: users[0]._id,
+    //     title: 'How to control aphids in tomato plants?',
+    //     content: 'I\'m seeing a lot of aphids on my tomato plants. What are the best organic methods to control them without harming beneficial insects?',
+    //     tags: ['pest-control', 'organic-farming', 'tomatoes'],
+    //     upvotes: 15,
+    //     expertReplies: true
+    //   },
+    //   {
+    //     userID: users[1]._id,
+    //     title: 'Best practices for soil health management',
+    //     content: 'As an agricultural expert, I wanted to share some key practices for maintaining soil health: crop rotation, cover cropping, organic matter addition, and minimal tillage.',
+    //     tags: ['soil-health', 'sustainable-farming', 'expert-advice'],
+    //     upvotes: 28,
+    //     expertReplies: false
+    //   },
+    //   {
+    //     userID: users[0]._id,
+    //     title: 'Water conservation techniques for drought-prone areas',
+    //     content: 'Living in a drought-prone region, I\'m looking for effective water conservation methods. Any recommendations for drip irrigation or rainwater harvesting?',
+    //     tags: ['water-conservation', 'drought', 'irrigation'],
+    //     upvotes: 22,
+    //     expertReplies: true
+    //   }
+    // ]);
 
     console.log('Database seeded successfully!');
     process.exit(0);
