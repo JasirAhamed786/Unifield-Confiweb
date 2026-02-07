@@ -10,6 +10,7 @@ const Profile = () => {
   const [profile, setProfile] = useState({});
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
+  const [stats, setStats] = useState({ posts: 0, upvotes: 0, joinedDate: '' });
   const { register, handleSubmit, setValue } = useForm();
 
   useEffect(() => {

@@ -36,7 +36,7 @@ const AdminPanel = () => {
   const fetchStats = async () => {
     try {
       const [usersRes, cropsRes, schemesRes, researchRes, policiesRes, postsRes] = await Promise.all([
-        axios.get('http://localhost:5001/api/users'),
+        axios.get('http://localhost:5000/api/users'),
         axios.get('http://localhost:5001/api/cropguides'),
         axios.get('http://localhost:5001/api/schemes'),
         axios.get('http://localhost:5001/api/research'),

@@ -17,7 +17,7 @@ const Login = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post('http://localhost:5001/api/auth/login', data);
+      const res = await axios.post('http://localhost:5000/api/auth/login', data);
       login(res.data.token);
       toast.success('Login successful!');
       navigate('/dashboard');

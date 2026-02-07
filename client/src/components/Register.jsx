@@ -26,15 +26,15 @@ const Register = () => {
     setLoading(true);
 
     try {
-      await axios.post('http://localhost:5001/api/auth/register', data);
+      await axios.post('http://localhost:5000/api/auth/register', data);
       toast.success('Account created successfully!');
 
       // Auto login after registration
-      const loginRes = await axios.post('http://localhost:5001/api/auth/login', {
+      const loginRes = await axios.post('http://localhost:5000/api/auth/login', {
         email: data.email,
         password: data.password
       });
-      login(loginRes.data.token, loginRes.data.user);
+      login(loginRes.data.token);
       navigate('/dashboard');
     } catch (err) {
       console.log(err);

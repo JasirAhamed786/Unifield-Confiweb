@@ -36,6 +36,13 @@ const User = require('./models/User');
 
 app.post('/api/auth/register', async (req, res) => {
   const { name, email, password, role, languagePref, location } = req.body;
+
+  // Check if user already exists
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({ message: 'User already exists with this email' });
+  }
+
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -265,5 +272,5 @@ app.delete('/api/forumposts/:id', verifyToken, async (req, res) => {
 
 // restart
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

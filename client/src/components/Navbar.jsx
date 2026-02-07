@@ -28,14 +28,15 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center">
-              <img src="/assets/logo.png" alt="UniField Logo" className="h-10 w-auto object-contain mr-3" />
-              <span className="text-2xl font-bold text-primary">UniField</span>
-            </Link>
-          </div>
+      <div className="relative">
+        <div className="absolute left-4 sm:left-6 lg:left-8 top-1/2 transform -translate-y-1/2 z-10">
+          <Link to="/" className="flex items-center">
+            <img src="/assets/logo.png" alt="UniField Logo" className="h-10 w-auto object-contain mr-1" />
+            <span className="text-2xl font-bold text-primary">UniField</span>
+          </Link>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-end h-16">
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
@@ -161,6 +162,7 @@ const Navbar = () => {
             </div>
           </div>
         )}
+        </div>
       </div>
     </nav>
   );
