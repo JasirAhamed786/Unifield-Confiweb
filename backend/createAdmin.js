@@ -15,18 +15,23 @@ async function createAdmin() {
 
     // Check if admin already exists
     const existingAdmin = await User.findOne({ role: 'Admin' });
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash('admin123', salt);
+
     if (existingAdmin) {
-      console.log('Admin already exists:', existingAdmin.email);
+      // Update existing admin password
+      existingAdmin.password = hashedPassword;
+      await existingAdmin.save();
+      console.log('Admin password updated successfully!');
+      console.log('Email:', existingAdmin.email);
+      console.log('Password: admin123');
       return;
     }
 
     // Create admin user
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash('admin123', salt);
-
     const admin = new User({
       name: 'Admin User',
-      email: 'admin@unifield.com',
+      email: 'admin@example.com',
       password: hashedPassword,
       role: 'Admin',
       languagePref: 'EN',
@@ -35,7 +40,7 @@ async function createAdmin() {
 
     await admin.save();
     console.log('Admin created successfully!');
-    console.log('Email: admin@unifield.com');
+    console.log('Email: admin@example.com');
     console.log('Password: admin123');
   } catch (error) {
     console.error('Error creating admin:', error);
